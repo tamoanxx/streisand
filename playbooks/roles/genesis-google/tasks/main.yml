@@ -4,8 +4,7 @@
   register: ssh_key
 
 - name: Create the GCE instance
-  local_action:
-    module: gce
+  gce:
     name: "{{ gce_server_name }}"
     network: "{{ gce_network }}"
     zone: "{{ gce_zone }}"
@@ -29,6 +28,8 @@
   add_host:
     name: "{{ streisand_server.instance_data[0].public_ip }}"
     groups: streisand-host
+    ansible_user: ubuntu
+    ansible_become: yes
 
 - name: Set the streisand_ipv4_address variable
   set_fact:

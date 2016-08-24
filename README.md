@@ -9,8 +9,8 @@ The Internet can be a little unfair. It's way too easy for ISPs, telecoms, polit
 
 Introducing Streisand
 ---------------------
-* A single command sets up a brand new server running a [wide variety of anti-censorship software](#services-provided) that can completely mask and encrypt all of your Internet traffic.
-* Streisand natively supports the creation of new servers at [Amazon EC2](https://aws.amazon.com/ec2/), [DigitalOcean](https://www.digitalocean.com/), [Google Compute Engine](https://cloud.google.com/compute/), [Linode](https://www.linode.com/), and [Rackspace](https://www.rackspace.com/)&mdash;with more providers coming soon! It also runs on any Ubuntu 14.04 server regardless of provider, and **hundreds** of instances can be configured simultaneously using this method.
+* A single command sets up a brand new Ubuntu 16.04 server running a [wide variety of anti-censorship software](#services-provided) that can completely mask and encrypt all of your Internet traffic.
+* Streisand natively supports the creation of new servers at [Amazon EC2](https://aws.amazon.com/ec2/), [DigitalOcean](https://www.digitalocean.com/), [Google Compute Engine](https://cloud.google.com/compute/), [Linode](https://www.linode.com/), and [Rackspace](https://www.rackspace.com/)&mdash;with more providers coming soon! It also runs on any Ubuntu 16.04 server regardless of provider, and **hundreds** of instances can be configured simultaneously using this method.
 * The process is completely automated and only takes about ten minutes, which is pretty awesome when you consider that it would require the average system administrator several days of frustration to set up even a small subset of what Streisand offers in its out-of-the-box configuration.
 * Once your Streisand server is running, you can give the custom connection instructions to friends, family members, and fellow activists. The connection instructions contain an embedded copy of the server's unique SSL certificate, so you only have to send them a single file.
 * Each server is entirely self-contained and comes with absolutely everything that users need to get started, including cryptographically verified mirrors of all common clients. This renders any attempted censorship of default download locations completely ineffective.
@@ -26,7 +26,7 @@ More Features
   * A unique password, SSL certificate, and SSL private key are generated for each Streisand Gateway. The Gateway instructions and certificate are transferred via SSH at the conclusion of Streisand's execution.
 * Distinct services and multiple daemons provide an enormous amount of flexibility. If one connection method gets blocked there are numerous options available, most of which are resistant to Deep Packet Inspection.
   * All of the connection methods (including L2TP/IPsec and direct OpenVPN connections) are effective against the type of blocking Turkey has been experimenting with.
-  * OpenConnect/AnyConnect, OpenSSH, OpenVPN (wrapped in stunnel), Shadowsocks, and Tor (with obfsproxy and the obfs3 pluggable transport) are all currently effective against China's Great Firewall.
+  * OpenConnect/AnyConnect, OpenSSH, OpenVPN (wrapped in stunnel), Shadowsocks, and Tor (with obfsproxy and the obfs4 pluggable transport) are all currently effective against China's Great Firewall.
 * Every task has been thoroughly documented and given a detailed description. Streisand is simultaneously the most complete HOWTO in existence for the setup of all of the software it installs, and also the antidote for ever having to do any of this by hand again.
 * All software runs on ports that have been deliberately chosen to make simplistic port blocking unrealistic without causing massive collateral damage. OpenVPN, for example, does not run on its default port of 1194, but instead uses port 636, the standard port for LDAP/SSL connections that are beloved by companies worldwide.
   * *L2TP/IPsec is a notable exception to this rule because the ports cannot be changed without breaking client compatibility*
@@ -38,7 +38,6 @@ Services Provided
 * L2TP/IPsec using [Libreswan](https://libreswan.org/) and [xl2tpd](https://www.xelerance.com/software/xl2tpd/)
   * A randomly chosen pre-shared key and password are generated.
   * Windows, OS X, Android, and iOS users can all connect using the native VPN support that is built into each operating system without installing any additional software.
-  * *Streisand does not install L2TP/IPsec on Google GCE servers by default because the instances cannot bind directly to their public IP addresses which makes IPsec routing nearly impossible.*
 * [Monit](https://mmonit.com/monit/)
   * Monitors process health and automatically restarts services in the unlikely event that they crash or become unresponsive.
 * [OpenSSH](http://www.openssh.com/)
@@ -66,7 +65,7 @@ Services Provided
   * The stunnel certificate and key are exported in PKCS #12 format so they are compatible with other SSL tunneling applications. Notably, this enables [OpenVPN for Android](https://play.google.com/store/apps/details?id=de.blinkt.openvpn) to tunnel its traffic through [SSLDroid](https://play.google.com/store/apps/details?id=hu.blint.ssldroid). OpenVPN in China on a mobile device? Yes!
 * [Tor](https://www.torproject.org/)
   * A [bridge relay](https://www.torproject.org/docs/bridges) is set up with a random nickname.
-  * [Obfsproxy](https://www.torproject.org/projects/obfsproxy.html.en) is installed and configured with support for the obfs3 pluggable transport.
+  * [Obfsproxy](https://www.torproject.org/projects/obfsproxy.html.en) is installed and configured with support for the obfs4 pluggable transport.
   * A BridgeQR code is generated that can be used to automatically configure [Orbot](https://play.google.com/store/apps/details?id=org.torproject.android) for Android.
 * [UFW](https://wiki.ubuntu.com/UncomplicatedFirewall)
   * Firewall rules are configured for every service, and any traffic that is sent to an unauthorized port will be blocked.
@@ -114,7 +113,7 @@ Complete all of these tasks on your local home machine.
 * Install [Ansible](http://www.ansible.com/home).
   * On OS X (via [Homebrew](http://brew.sh/))
 
-            brew install ansible
+            brew update && brew install ansible
   * On BSD or Linux (via pip)
 
             sudo pip install ansible markupsafe
@@ -153,7 +152,7 @@ Complete all of these tasks on your local home machine.
 
 ### Running Streisand on Other Providers ###
 
-You can also run Streisand on any number of new Ubuntu 14.04 servers. Dedicated hardware? Great! Esoteric cloud provider? Awesome! To do this, simply edit the `inventory` file and uncomment the final two lines. Replace the sample IP with the address (or addresses) of the servers you wish to configure. Make sure you read through all of the documentation in the `inventory` file and update the `ansible.cfg` file if necessary. Then run the Streisand playbook directly:
+You can also run Streisand on any number of new Ubuntu 16.04 servers. Dedicated hardware? Great! Esoteric cloud provider? Awesome! To do this, simply edit the `inventory` file and uncomment the final two lines. Replace the sample IP with the address (or addresses) of the servers you wish to configure. Make sure you read through all of the documentation in the `inventory` file and update the `ansible.cfg` file if necessary. Then run the Streisand playbook directly:
 
     ansible-playbook playbooks/streisand.yml
 
